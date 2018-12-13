@@ -1,0 +1,60 @@
+﻿@page "{id}"
+@model TSAC.Rosada.Blog.Web.Pages.Posts.DetailsModel
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>@Model.Post.Title</h2>
+<p>@Model.Post.Content</p>
+<br />
+<p>@Model.Post.PublishedDate</p>
+<hr />
+
+<div class="comments"></div>
+
+
+<div class="form-group">
+    <label class="col-sm-2">Comment</label>
+    <div class="col-sm-10">
+        <textarea id="message" name="message" class="form-control"></textarea>
+    </div>
+</div>
+
+
+<div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-default" value="Save" name="save" id="save">SAVE</button>
+    </div>
+</div>
+
+
+<script>
+    (async function loadComment() {
+        console.log("loadComment");
+        let comments;
+         await fetch("https://localhost:44316/api/post/" +@Model.Post.Id +"/comment").then(res => res.json()).then(res => comments = res);
+        comments.forEach(function (element) {
+            console.log(element);
+            $(".comments").append("<div class=\"comment\"><h4>" + element.author + "</h4><p>" + element.commentText + "</p><p>" + element.insertDate+"</p></div>");
+         });
+        $("#save").click(function () {
+            let form = JSON.stringify({ "Id": @Model.Post.Id, "CommentText": $('textarea#message').val()});
+            console.log("form",form)
+            fetch("https://localhost:44316/api/post/insert/comment", {
+                method: "POST",
+                body: form,
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            loadComment();
+        });
+    })();
+
+
+</script>
+
+@section Scripts {
+        <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
+        <script src="~/js/signalr_comments.js"></script>
+    }

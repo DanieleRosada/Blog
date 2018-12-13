@@ -1,0 +1,22 @@
+﻿@page
+@model TSAC.Rosada.Blog.Web.Pages.Posts.DeleteModel
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<div class="row">
+
+    @foreach (var item in Model.Posts)
+    {
+        <h3>@item.Title</h3>
+        <p>@item.Content</p>
+        <form asp-page="products/delete" method="post">
+            <input type="hidden" value="@item.Id" name="id" />
+            <button type="submit" class="btn btn-danger btn-block">
+                <span class="glyphicon glyphicon-trash"></span>
+            </button>
+        </form>
+    }
+</div>

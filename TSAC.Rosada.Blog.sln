@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2046
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSAC.Rosada.Blog.Web", "TSAC.Rosada.Blog.Web\TSAC.Rosada.Blog.Web.csproj", "{119A4EB3-2C52-4EB0-9095-AD87BF60C910}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TSAC.Rosada.Blog.Data", "TSAC.Rosada.Blog.Data\TSAC.Rosada.Blog.Data.csproj", "{027ABBA4-166C-4778-A6B2-3F624C4E42D8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{119A4EB3-2C52-4EB0-9095-AD87BF60C910}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{119A4EB3-2C52-4EB0-9095-AD87BF60C910}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{119A4EB3-2C52-4EB0-9095-AD87BF60C910}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{119A4EB3-2C52-4EB0-9095-AD87BF60C910}.Release|Any CPU.Build.0 = Release|Any CPU
+		{027ABBA4-166C-4778-A6B2-3F624C4E42D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{027ABBA4-166C-4778-A6B2-3F624C4E42D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{027ABBA4-166C-4778-A6B2-3F624C4E42D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{027ABBA4-166C-4778-A6B2-3F624C4E42D8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9A28823C-648A-4924-992E-DD31DB7953C8}
+	EndGlobalSection
+EndGlobal

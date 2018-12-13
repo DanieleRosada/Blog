@@ -1,0 +1,21 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<h1>Blog</h1>
+
+<div class="row">
+
+    @foreach (var item in Model.Posts)
+    {
+        @if (item.PublishedDate != null)
+        {
+            <a asp-page="posts/details" asp-route-id="@item.Id">
+                <h3>@item.Title</h3>
+            </a>
+            <p>@item.Content</p>
+        }
+    }
+</div>
