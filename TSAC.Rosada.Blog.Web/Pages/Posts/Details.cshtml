@@ -32,11 +32,13 @@
     (async function loadComment() {
         console.log("loadComment");
         let comments;
-         await fetch("https://localhost:44316/api/post/" +@Model.Post.Id +"/comment").then(res => res.json()).then(res => comments = res);
+        await fetch("https://localhost:44316/api/post/" +@Model.Post.Id +"/comment").then(res => res.json()).then(res => comments = res);
+        $(".comments").empty();
         comments.forEach(function (element) {
             console.log(element);
             $(".comments").append("<div class=\"comment\"><h4>" + element.author + "</h4><p>" + element.commentText + "</p><p>" + element.insertDate+"</p></div>");
-         });
+        });
+        $(".comments").append("<hr/>");
         $("#save").click(function () {
             let form = JSON.stringify({ "Id": @Model.Post.Id, "CommentText": $('textarea#message').val()});
             console.log("form",form)

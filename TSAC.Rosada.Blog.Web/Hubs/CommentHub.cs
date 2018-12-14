@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Baldin.SebEJ.Blog.Web.Hubs
+namespace TSAC.Rosada.Blog.Web.Hubs
 {
     public class CommentHub : Hub
     {
@@ -20,19 +20,9 @@ namespace Baldin.SebEJ.Blog.Web.Hubs
             _data = dataAccess;
         }
 
-        public async Task SendMessage(string user, int Post_Id, string message)
+        public async Task SendMessage(Comment comment)
         {
-            var comment = new Comment
-            {
-                Email = user,
-                InsertDate = DateTime.UtcNow,
-                PostId = Post_Id,
-                CommentText = message
-            };
-            var identity = await _userManager.FindByEmailAsync(user);
-            comment.Author = identity.Id;
-            _data.InsertComment(comment);
-            await Clients.Others.SendAsync("ReceiveComments", user, comment.InsertDate.ToString(), message, Post_Id);
+            await Clients.All.SendAsync("ReceiveComments", comment.Author, comment.InsertDate.ToString(), comment.CommentText, comment.PostId); //Others
         }
 
         public async Task IsWriting(string email)

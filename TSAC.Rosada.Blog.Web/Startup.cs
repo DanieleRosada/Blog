@@ -13,6 +13,7 @@ using TSAC.Rosada.Blog.Web.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TSAC.Rosada.Blog.Data;
+using TSAC.Rosada.Blog.Web.Hubs;
 
 namespace TSAC.Rosada.Blog.Web
 {
@@ -44,6 +45,7 @@ namespace TSAC.Rosada.Blog.Web
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddScoped<IDataAccess, DataAccess>();
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,7 +65,10 @@ namespace TSAC.Rosada.Blog.Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<CommentHub>("/hubs");
+            });
             app.UseAuthentication();
 
             app.UseMvc();
