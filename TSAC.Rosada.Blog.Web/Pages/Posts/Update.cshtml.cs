@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -31,33 +33,44 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
 
         public class UpdatePost
         {
-            [Required]
-            [Display(Name = "Title")]
-            [DataType(DataType.Text)]
-            public string Title { get; set; }
-
-            [Required]
-            [Display(Name = "Content")]
-            [DataType(DataType.Text)]
-            public string Content { get; set; }
+            public IFormFile Image { get; set; }
         }
 
         [BindProperty]
         public UpdatePost Post { get; set; }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost(string value, int id)
         {
             
             if (ModelState.IsValid)
             {
+                var file = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot", "files", $"{PostUpdate.Title}.jpg"
+                );
+
+                if (Post.Image != null)
+                {
+                    using (var stream = new FileStream(file, FileMode.Create))
+                    {
+                        await Post.Image.CopyToAsync(stream);
+                    }
+                }
+
                 var userId = _userManager.GetUserId(User);
+                DateTime? PublishedDate = null;
+                if (value == "Public")
+                {
+                    PublishedDate = DateTime.Now;
+                }
                 _data.UpdatePost(new Post
                 {
-                    Id = PostUpdate.Id,
-                    Title = Post.Title,
-                    Content = Post.Content,
+                    Id = id,
+                    Title = PostUpdate.Title,
+                    Content = PostUpdate.Content,
                     UserUpdate = userId,
-                    DataUpdate = DateTime.Now
+                    DataUpdate = DateTime.Now,
+                    PublishedDate = PublishedDate
                 });
                 return RedirectToPage("/index");
             }
@@ -67,11 +80,21 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
         public void OnGet(int id)
         {  
             var userId = _userManager.GetUserId(User);
-            Posts = _data.GetOwnPost(userId);
-            if (id != null) {
-                PostUpdate = _data.GetPost(id);
-                
+            var list = _data.GetOwnPost(userId);
+            foreach (var post in list)
+            {
+                var item = post;
+                var file = Path.Combine(
+                       Directory.GetCurrentDirectory(),
+                       "wwwroot", "files", $"{post.Title}.jpg"
+           );
+                if (System.IO.File.Exists(file))
+                    item.ImageExist = true;
+                else
+                    item.ImageExist = false;
             }
+            Posts = list;
+            PostUpdate = _data.GetPost(id);
         }
     }
 }

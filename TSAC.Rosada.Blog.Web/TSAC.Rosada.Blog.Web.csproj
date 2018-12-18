@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\lib\%40aspnet\" />
+    <Folder Include="wwwroot\files\" />
   </ItemGroup>
 
 </Project>

@@ -10,6 +10,8 @@
 
     @foreach (var item in Model.Posts)
     {
+        @if (item.ImageExist)
+        {<img src="~/files/@(item.Title + ".jpg") " />}
         <h3>@item.Title</h3>
         <p>@item.Content</p>
         <form asp-page="products/delete" method="post">

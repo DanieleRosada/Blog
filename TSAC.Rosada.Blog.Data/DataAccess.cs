@@ -102,7 +102,7 @@ namespace TSAC.Rosada.Blog.Data
                                 ,[DataUpdate] = @DataUpdate
                                 ,[UserUpdate] = @UserUpdate
                                 ,[PublishedDate] = @PublishedDate
-                    WHERE ProductId = @Id";
+                    WHERE Id = @Id";
                 connection.Execute(query, post);
             }
         }

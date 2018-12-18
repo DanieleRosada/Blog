@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,20 @@ namespace TSAC.Rosada.Blog.Web.Pages
 
         public void OnGet()
         {
-            Posts = _data.GetPosts();
+            var list = _data.GetPosts();
+            foreach (var post in list)
+            {
+                var item = post;
+                var file = Path.Combine(
+                       Directory.GetCurrentDirectory(),
+                       "wwwroot", "files", $"{post.Title}.jpg"
+           );
+                if (System.IO.File.Exists(file))
+                    item.ImageExist = true;
+                else
+                    item.ImageExist = false;
+            }
+            Posts = list;
         }
     }
 }

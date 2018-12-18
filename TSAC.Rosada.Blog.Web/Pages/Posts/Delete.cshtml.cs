@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -28,14 +29,27 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
 
         public IActionResult OnPost(int Id)
         {
-               _data.DeletePost(Id);
-            return RedirectToPage("/Posts/Delete");
+            _data.DeletePost(Id);
+            return RedirectToPage("/index");
         }
 
         public void OnGet()
         {
             var userId = _userManager.GetUserId(User);
-            Posts = _data.GetOwnPost(userId);
+            var list = _data.GetOwnPost(userId);
+            foreach (var post in list)
+            {
+                var item = post;
+                var file = Path.Combine(
+                       Directory.GetCurrentDirectory(),
+                       "wwwroot", "files", $"{post.Title}.jpg"
+           );
+                if (System.IO.File.Exists(file))
+                    item.ImageExist = true;
+                else
+                    item.ImageExist = false;
+            }
+            Posts = list;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -25,6 +26,14 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
         public void OnGet(int id)
         {
             Post = _data.GetPost(id);
+            var file = Path.Combine(
+                   Directory.GetCurrentDirectory(),
+                   "wwwroot", "files", $"{Post.Title}.jpg"
+       );
+            if (System.IO.File.Exists(file))
+                Post.ImageExist = true;
+            else
+                Post.ImageExist = false;
         }
 
     }

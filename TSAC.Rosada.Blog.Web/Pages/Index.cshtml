@@ -12,6 +12,8 @@
     {
         @if (item.PublishedDate != null)
         {
+            @if (item.ImageExist)
+            {<img src="~/files/@(item.Title + ".jpg") " />}
             <a asp-page="posts/details" asp-route-id="@item.Id">
                 <h3>@item.Title</h3>
             </a>

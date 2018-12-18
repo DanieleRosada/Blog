@@ -21,5 +21,6 @@ namespace TSAC.Rosada.Blog.Data.Models
         public string UserUpdate { get; set; }
 
         public Nullable<DateTime> PublishedDate { get; set; }
+        public bool ImageExist { get; set; }
     }
 }

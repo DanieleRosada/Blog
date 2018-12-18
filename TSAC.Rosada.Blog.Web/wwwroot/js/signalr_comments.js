@@ -42,21 +42,13 @@ document.getElementById("message_Text").addEventListener("keydown", function (ev
 
 // matteo, franco is writing...
 connection.on("UserIsWriting", function (user) {
-    let whoiswriting = '';
-    whoiswriting = userSpace.textContent;
-    let newWriting = '';
-    if (whoiswriting.indexOf(user) === -1) {
-        whoiswriting.replace(' is writing...', '');
-        whoiswriting.replace(' ', '');
-        let users = whoiswriting.split(',');
-        newWriting = user[0];
-        users.forEach((elem, index) => {
-            if (index !== 0)
-                newWriting += ', ' + elem;
-        });
-        newWriting += ' is writing...';
-    }
-    userSpace.innerText = newWriting;
+    $("textarea#message").oninput(function () {
+        $('#isWriting').append("<p class='message success'>Upload successful!</p>");
+        connection.invoke("IsWriting", email);
+        setTimeout(function () {
+            $('.message').remove();
+        }, 2000);
+    });
 });
 
 connection.on("UserIsNotWriting", function (user) {
