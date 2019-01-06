@@ -1,96 +1,72 @@
 ﻿"use strict";
 
-var message_box = document.getElementById("comments_box");
-var userSpace = document.getElementById("userswriting");
-var connection = new signalR.HubConnectionBuilder().withUrl("/hubs").build();
+const connection = new signalR.HubConnectionBuilder().withUrl("/hubs").build();
 
-var lastTyped = new Date();
-var typeTimeout = setTimeout(function () {
-    connection.invoke("IsNotWriting", document.getElementById("userName_Current").value);
-}, 10000);
+(async function loadComment() {
+    console.log("loadComment");
+    let comments;
+    await fetch("https://localhost:44342/api/post/" + document.getElementById("id").value +"/comment").then(res => res.json()).then(res => comments = res);
+    $(".comments").empty();
+    comments.forEach(function (element) {
+        console.log(element);
+        $(".comments").append("<div class=\"comment\"><h4>" + element.author + "</h4><p>" + element.commentText + "</p><p>" + element.insertDate + "</p></div>");
+    });
+})();
 
-connection.on("ReceiveComments", function (user, insertDate, message, postId) {
-    if (document.getElementById("postId").value == postId) {
-        appendComment(user, insertDate, message);
-    }
-});
 
 connection.start().catch(function (err) {
     return console.error(err.toString());
 });
 
+connection.on("ReceiveMessage", function (user, message) {
+    console.log("receiveMessage")
+    $(".comments").append("<div class=\"comment new\"><h4>" + user + "</h4><p>" + message + "</p><p>Now</p></div>");
+    $('.new').css('background', 'green')
+});
+
 document.getElementById("sendButton").addEventListener("click", function (event) {
-    var user = document.getElementById("userName_Current").value;
-    var message = document.getElementById("message_Text").value;
-    var postId = document.getElementById("postId").value;
-    connection.invoke("SendMessage", user, postId, message).catch(function (err) {
+    var user = document.getElementById("userInput").value;
+    var message = document.getElementById("comment").value;
+    var form = JSON.stringify({ "Id": document.getElementById("id").value, "CommentText": message});
+    fetch("https://localhost:44342/api/post/insert/comment", {
+        method: "POST",
+        body: form,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    connection.invoke("SendMessage", user, message).catch(function (err) {
         return console.error(err.toString());
     });
-    appendComment(user, new Date().toString(), message);
     event.preventDefault();
 });
 
-document.getElementById("message_Text").addEventListener("keydown", function (event) {
-    if ((lastTyped.getTime() + 5000) < new Date().getTime()) {
-        connection.invoke("IsWriting", document.getElementById("userName_Current").value);
-        clearTimeout(typeTimeout);
-        typeTimeout = setTimeout(function () {
-            connection.invoke("IsNotWriting", document.getElementById("userName_Current").value);
-        }, 10000);
-    }
+// is Writing
+document.getElementById("comment").addEventListener("focus", function IsWriting() {
+    console.log("focus")
+    var user = document.getElementById("userInput").value;
+    connection.invoke("IsWriting", user).catch(function (err) {
+        return console.error(err.toString());
+    });
 });
 
-// matteo, franco is writing...
 connection.on("UserIsWriting", function (user) {
-    $("textarea#message").oninput(function () {
-        $('#isWriting').append("<p class='message success'>Upload successful!</p>");
-        connection.invoke("IsWriting", email);
-        setTimeout(function () {
-            $('.message').remove();
-        }, 2000);
+    console.log("UserIsWriting")
+    console.log(user);
+    $(".IsWriting").append("<p class=\"userWrite\">" + user + " is Writing..</p>");
+});
+
+document.getElementById("comment").addEventListener("blur", function () {
+    console.log("blur")
+    var user = document.getElementById("userInput").value;
+    connection.invoke("IsNotWriting", user).catch(function (err) {
+        return console.error(err.toString());
     });
 });
 
 connection.on("UserIsNotWriting", function (user) {
-    let whoiswriting = '';
-    whoiswriting = userSpace.textContent;
-    let newWriting = '';
-    if (whoiswriting.indexOf(user) !== -1) {
-        whoiswriting.replace(' is writing...', '');
-        whoiswriting.replace(' ', '');
-        let users = whoiswriting.split(',');
-        users = users.reduce((accumulator, current) => {
-            if (current !== user)
-                accumulator.push(current);
-        }, []);
-        newWriting = user[0];
-        users.forEach((elem, index) => {
-            if (index !== 0)
-                newWriting += ', ' + elem;
-        });
-        newWriting += ' is writing...';
-    }
-    userSpace.innerText = newWriting;
+    console.log("UserIsNotWriting")
+    console.log(user);
+    $('.userWrite').remove(":contains('"+user+"')"); 
 });
-
-function GetComment(email, date, text) {
-    return `<div class="row">
-                <div class="col-md-4">
-                    <p>${email}</p>
-                </div>
-                <div class="col-md-4 col-md-offset-4">
-                    <p>${date}</p>
-                </div>
-            </div>
-            <div class="row">
-                <p>${text}</p>
-            </div>`;
-}
-
-function appendComment(user, insertDate, message) {
-    var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    var comm = document.createElement("div");
-    comm.setAttribute("class", "col-md-9");
-    comm.innerHTML = GetComment(user, insertDate, msg);
-    message_box.appendChild(comm);
-}

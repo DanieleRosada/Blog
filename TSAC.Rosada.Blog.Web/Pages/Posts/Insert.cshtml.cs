@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using TSAC.Rosada.Blog.Data;
 using TSAC.Rosada.Blog.Data.Models;
 using System.IO;
+using TSAC.Rosada.Blog.Web.Function;
 
 namespace TSAC.Rosada.Blog.Web.Pages.Posts
 {
@@ -52,9 +51,18 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
         {
             if (ModelState.IsValid)
             {
-                //insert post on db
+                string filename = null;
                 var userId = _userManager.GetUserId(User);
                 DateTime? PublishedDate = null;
+                
+                //insert photo on directory and azure
+                if (Post.Image != null)
+                {
+                    filename = $"{DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_" + Post.Image.FileName}";
+                    await common.InsertPhoto(Post.Image, filename);
+                }
+
+                //insert post on db
                 if (value == "Public")
                 {
                     PublishedDate = DateTime.Now;
@@ -64,20 +72,10 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
                     Title = Post.Title,
                     Content = Post.Content,
                     UserInsert = userId,
-                    PublishedDate = PublishedDate
+                    PublishedDate = PublishedDate,
+                    Image = "/files/" + filename
                 });
-                //insert photo on directory
-                var file = Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        "wwwroot", "files", $"{Post.Title}.jpg"
-                );
-                if (Post.Image != null)
-                {
-                    using (var stream = new FileStream(file, FileMode.Create))
-                    {
-                        await Post.Image.CopyToAsync(stream);
-                    }
-                }
+                
                 return RedirectToPage("/index");
             }
             return Page();

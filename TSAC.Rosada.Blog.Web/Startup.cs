@@ -13,7 +13,7 @@ using TSAC.Rosada.Blog.Web.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TSAC.Rosada.Blog.Data;
-using TSAC.Rosada.Blog.Web.Hubs;
+using TSAC.Rosada.Blog.Web.Hubs;    
 
 namespace TSAC.Rosada.Blog.Web
 {

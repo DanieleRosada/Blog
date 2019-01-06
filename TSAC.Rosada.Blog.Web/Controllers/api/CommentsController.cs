@@ -30,7 +30,7 @@ namespace TSAC.Rosada.Blog.Web.Controllers.api
         }
 
         [HttpPost("insert/comment")]
-        async public void Post(Comment comment) 
+        public void Post(Comment comment) 
         {
             var newComment = new Comment
             {
@@ -40,7 +40,6 @@ namespace TSAC.Rosada.Blog.Web.Controllers.api
                 CommentText = comment.CommentText
             };
             _data.InsertComment(newComment);
-            await _hubs.SendMessage(newComment);
         }
 
     }

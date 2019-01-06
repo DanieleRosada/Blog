@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TSAC.Rosada.Blog.Data;
 using TSAC.Rosada.Blog.Data.Models;
+using TSAC.Rosada.Blog.Web.Function;
 
 namespace TSAC.Rosada.Blog.Web.Pages.Posts
 {
@@ -44,21 +45,17 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
             
             if (ModelState.IsValid)
             {
-                var file = Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        "wwwroot", "files", $"{PostUpdate.Title}.jpg"
-                );
-
-                if (Post.Image != null)
-                {
-                    using (var stream = new FileStream(file, FileMode.Create))
-                    {
-                        await Post.Image.CopyToAsync(stream);
-                    }
-                }
-
                 var userId = _userManager.GetUserId(User);
                 DateTime? PublishedDate = null;
+                string filename = null;
+                //insert image
+                if (Post.Image != null)
+                {
+                    filename = $"{DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_" + Post.Image.FileName}";
+                    await common.InsertPhoto(Post.Image, filename);
+                }
+
+                //insert db
                 if (value == "Public")
                 {
                     PublishedDate = DateTime.Now;
@@ -70,7 +67,8 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
                     Content = PostUpdate.Content,
                     UserUpdate = userId,
                     DataUpdate = DateTime.Now,
-                    PublishedDate = PublishedDate
+                    PublishedDate = PublishedDate,
+                    Image = "/files/" + filename
                 });
                 return RedirectToPage("/index");
             }
@@ -80,20 +78,7 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
         public void OnGet(int id)
         {  
             var userId = _userManager.GetUserId(User);
-            var list = _data.GetOwnPost(userId);
-            foreach (var post in list)
-            {
-                var item = post;
-                var file = Path.Combine(
-                       Directory.GetCurrentDirectory(),
-                       "wwwroot", "files", $"{post.Title}.jpg"
-           );
-                if (System.IO.File.Exists(file))
-                    item.ImageExist = true;
-                else
-                    item.ImageExist = false;
-            }
-            Posts = list;
+            Posts = _data.GetOwnPost(userId);
             PostUpdate = _data.GetPost(id);
         }
     }

@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Configuration;
-using System;
-using Dapper;
+using System.IO;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using TSAC.Rosada.Blog.Data.Models;
@@ -81,12 +80,14 @@ namespace TSAC.Rosada.Blog.Data
                                ([Title]
                                ,[Content]
                                ,[UserInsert]
-                               ,[PublishedDate])
+                               ,[PublishedDate]
+                               ,[Image])
                          VALUES
                                (@Title,
                                 @Content,
                                 @UserInsert,
-                                @PublishedDate)";
+                                @PublishedDate,
+                                @Image)";
                 connection.Execute(query, post);
             }
         }
@@ -102,6 +103,7 @@ namespace TSAC.Rosada.Blog.Data
                                 ,[DataUpdate] = @DataUpdate
                                 ,[UserUpdate] = @UserUpdate
                                 ,[PublishedDate] = @PublishedDate
+                                ,[Image] = @Image 
                     WHERE Id = @Id";
                 connection.Execute(query, post);
             }
@@ -138,7 +140,8 @@ namespace TSAC.Rosada.Blog.Data
             }
         }
 
-        public void InsertComment(Comment comment) {
+        public void InsertComment(Comment comment)
+        {
             using (var connection = new SqlConnection(_connectionString))
             {
                 var query = @"

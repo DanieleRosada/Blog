@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using TSAC.Rosada.Blog.Data.Models;
 
@@ -24,7 +25,5 @@ namespace TSAC.Rosada.Blog.Data
         IEnumerable<Comment> GetComments(int idPhoto);
 
         void InsertComment(Comment comment);
-
-        
     }
 }

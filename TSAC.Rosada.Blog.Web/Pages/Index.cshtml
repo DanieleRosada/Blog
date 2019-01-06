@@ -7,13 +7,12 @@
 <h1>Blog</h1>
 
 <div class="row">
-
     @foreach (var item in Model.Posts)
     {
         @if (item.PublishedDate != null)
         {
-            @if (item.ImageExist)
-            {<img src="~/files/@(item.Title + ".jpg") " />}
+            @if (item.Image != null)
+            {<img src=@item.Image />}
             <a asp-page="posts/details" asp-route-id="@item.Id">
                 <h3>@item.Title</h3>
             </a>

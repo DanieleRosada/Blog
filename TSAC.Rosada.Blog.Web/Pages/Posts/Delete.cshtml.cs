@@ -36,20 +36,7 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
         public void OnGet()
         {
             var userId = _userManager.GetUserId(User);
-            var list = _data.GetOwnPost(userId);
-            foreach (var post in list)
-            {
-                var item = post;
-                var file = Path.Combine(
-                       Directory.GetCurrentDirectory(),
-                       "wwwroot", "files", $"{post.Title}.jpg"
-           );
-                if (System.IO.File.Exists(file))
-                    item.ImageExist = true;
-                else
-                    item.ImageExist = false;
-            }
-            Posts = list;
+            Posts = _data.GetOwnPost(userId);
         }
     }
 }

@@ -8,8 +8,8 @@
 {
     @if (item.PublishedDate == null)
     {
-        @if (item.ImageExist)
-        {<img src="~/files/@(item.Title + ".jpg") " />}
+        @if (item.Image !=null)
+        {<img src=@item.Image />}
         <h3>@item.Title</h3>
         <p>@item.Content</p>
         <form method="get">
@@ -24,7 +24,7 @@
 <br />
 @if (Model.PostUpdate != null)
 {
-    <form class="form-horizontal" asp-page="Update" method="post">
+    <form class="form-horizontal" asp-page="Update" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <span asp-validation-for="PostUpdate.Title"></span>
             <label asp-for="PostUpdate.Title" class="col-sm-2"></label>

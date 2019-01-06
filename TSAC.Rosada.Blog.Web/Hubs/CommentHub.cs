@@ -11,28 +11,19 @@ namespace TSAC.Rosada.Blog.Web.Hubs
 {
     public class CommentHub : Hub
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IDataAccess _data;
-
-        public CommentHub(UserManager<IdentityUser> userManager, IDataAccess dataAccess) : base()
+        public async Task SendMessage(string user, string message)
         {
-            _userManager = userManager;
-            _data = dataAccess;
+            await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
 
-        public async Task SendMessage(Comment comment)
+        public async Task IsWriting(string Author)
         {
-            await Clients.All.SendAsync("ReceiveComments", comment.Author, comment.InsertDate.ToString(), comment.CommentText, comment.PostId); //Others
+            await Clients.Others.SendAsync("UserIsWriting", Author);
         }
 
-        public async Task IsWriting(string email)
+        public async Task IsNotWriting(string Author)
         {
-            await Clients.Others.SendAsync("UserIsWriting", email);
-        }
-
-        public async Task IsNotWriting(string email)
-        {
-            await Clients.Others.SendAsync("UserIsNotWriting", email);
+            await Clients.Others.SendAsync("UserIsNotWriting", Author);
         }
     }
 }
