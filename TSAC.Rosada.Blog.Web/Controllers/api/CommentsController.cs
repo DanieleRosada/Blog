@@ -32,11 +32,15 @@ namespace TSAC.Rosada.Blog.Web.Controllers.api
         [HttpPost("insert/comment")]
         public void Post(Comment comment) 
         {
-            var newComment = new Comment
+            var user = User.Identity.Name;
+            if (user == null) {
+                user = comment.Author;
+            };
+             var newComment = new Comment
             {
                 PostId = comment.Id,
-                Author = User.Identity.Name,
-                Email = User.Identity.Name,
+                Author = user,
+                Email = user,
                 CommentText = comment.CommentText
             };
             _data.InsertComment(newComment);

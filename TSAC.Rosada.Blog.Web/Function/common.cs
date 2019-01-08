@@ -1,42 +1,39 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace TSAC.Rosada.Blog.Web.Function
 {
-    public class common
+    public class Common
     {
-        public static string _azureConnection;
+        private string _azureUser;
+        private string _azureKey;
 
-        public common(IConfiguration configuration)
+        public Common(IConfiguration configuration)
         {
-            _azureConnection = configuration.GetConnectionString("AzureConnection");
+            _azureUser = configuration.GetConnectionString("AzureUser");
+            _azureKey= configuration.GetConnectionString("AzureKey");
         }
 
-        public static async Task InsertPhoto(IFormFile image, string filename)
+        public async Task InsertPhoto(IFormFile image, string filename)
         {
             //directory
-
-            var file = Path.Combine(
-                Directory.GetCurrentDirectory(),
-                "wwwroot", "files", filename);
-            using (var stream = new FileStream(file, FileMode.Create))
-            {
-                await image.CopyToAsync(stream);
-            }
+            //var file = Path.Combine(
+            //    Directory.GetCurrentDirectory(),
+            //    "wwwroot", "files", filename);
+            //using (var stream = new FileStream(file, FileMode.Create))
+            //{
+            //    await image.CopyToAsync(stream);
+            //}
 
 
             //azure
-            string storageConnection = CloudConfigurationManager.GetSetting(_azureConnection);
-
-            CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse(storageConnection);
-
-            CloudBlobClient cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
+            var storageCredentials = new StorageCredentials(_azureUser, _azureKey);
+            var cloudStorageAccount = new CloudStorageAccount(storageCredentials, true);
+            var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
 
             CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference("image");
 

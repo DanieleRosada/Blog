@@ -11,11 +11,6 @@ namespace TSAC.Rosada.Blog.Data
     {
         readonly string _connectionString;
 
-        public DataAccess(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
-
         public DataAccess(IConfiguration configuration)
         {
             this._connectionString = configuration.GetConnectionString("DefaultConnection");

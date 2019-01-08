@@ -13,7 +13,8 @@ using TSAC.Rosada.Blog.Web.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TSAC.Rosada.Blog.Data;
-using TSAC.Rosada.Blog.Web.Hubs;    
+using TSAC.Rosada.Blog.Web.Hubs;
+using TSAC.Rosada.Blog.Web.Function;
 
 namespace TSAC.Rosada.Blog.Web
 {
@@ -44,6 +45,7 @@ namespace TSAC.Rosada.Blog.Web
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddScoped<Common>();
             services.AddScoped<IDataAccess, DataAccess>();
             services.AddSignalR();
         }

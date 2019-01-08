@@ -26,8 +26,11 @@ connection.on("ReceiveMessage", function (user, message) {
 
 document.getElementById("sendButton").addEventListener("click", function (event) {
     var user = document.getElementById("userInput").value;
+    if (!user) {
+        user = document.getElementById("user").value;
+    }
     var message = document.getElementById("comment").value;
-    var form = JSON.stringify({ "Id": document.getElementById("id").value, "CommentText": message});
+    var form = JSON.stringify({ "Id": document.getElementById("id").value, "CommentText": message, "Author": user});
     fetch("https://localhost:44342/api/post/insert/comment", {
         method: "POST",
         body: form,
@@ -46,6 +49,9 @@ document.getElementById("sendButton").addEventListener("click", function (event)
 document.getElementById("comment").addEventListener("focus", function IsWriting() {
     console.log("focus")
     var user = document.getElementById("userInput").value;
+    if (!user) {
+        user = document.getElementById("user").value;
+    }
     connection.invoke("IsWriting", user).catch(function (err) {
         return console.error(err.toString());
     });
@@ -60,6 +66,9 @@ connection.on("UserIsWriting", function (user) {
 document.getElementById("comment").addEventListener("blur", function () {
     console.log("blur")
     var user = document.getElementById("userInput").value;
+    if (!user) {
+        user = document.getElementById("user").value;
+    }
     connection.invoke("IsNotWriting", user).catch(function (err) {
         return console.error(err.toString());
     });

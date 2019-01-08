@@ -17,11 +17,14 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
     public class InsertModel : PageModel
     {
         public IDataAccess _data { get; set; }
+        public Common _azure { get; set; }
+
         private readonly UserManager<IdentityUser> _userManager;
 
-        public InsertModel(IDataAccess dataAccess, UserManager<IdentityUser> userManager)
+        public InsertModel(IDataAccess dataAccess, UserManager<IdentityUser> userManager, Common common)
         {
             _data = dataAccess;
+            _azure = common;
             _userManager = userManager;
         }
 
@@ -59,7 +62,8 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
                 if (Post.Image != null)
                 {
                     filename = $"{DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_" + Post.Image.FileName}";
-                    await common.InsertPhoto(Post.Image, filename);
+                    await _azure.InsertPhoto(Post.Image, filename);
+                    filename = "https://itsrosada.blob.core.windows.net/image/" + filename;
                 }
 
                 //insert post on db
@@ -73,7 +77,7 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
                     Content = Post.Content,
                     UserInsert = userId,
                     PublishedDate = PublishedDate,
-                    Image = "/files/" + filename
+                    Image = filename
                 });
                 
                 return RedirectToPage("/index");

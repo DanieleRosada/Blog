@@ -1,9 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -24,11 +20,13 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
         [BindProperty]
         public Post PostUpdate { get; set; }
         public IDataAccess _data { get; set; }
+        public Common _azure { get; set; }
         private readonly UserManager<IdentityUser> _userManager;
 
-        public UpdateModel(IDataAccess dataAccess, UserManager<IdentityUser> userManager)
-        {
+        public UpdateModel(IDataAccess dataAccess, UserManager<IdentityUser> userManager, Common common)
+        { 
             _data = dataAccess;
+            _azure = common;
             _userManager = userManager;
         }
 
@@ -40,7 +38,7 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
         [BindProperty]
         public UpdatePost Post { get; set; }
 
-        public async Task<IActionResult> OnPost(string value, int id)
+        public async Task<IActionResult> OnPost(string value, int id, string imageurl)
         {
             
             if (ModelState.IsValid)
@@ -49,12 +47,17 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
                 DateTime? PublishedDate = null;
                 string filename = null;
                 //insert image
+                if (imageurl != null)
+                {
+                    filename = imageurl;
+                }
                 if (Post.Image != null)
                 {
                     filename = $"{DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_" + Post.Image.FileName}";
-                    await common.InsertPhoto(Post.Image, filename);
+                    await _azure.InsertPhoto(Post.Image, filename);
+                    filename = "https://itsrosada.blob.core.windows.net/image/" + filename;
                 }
-
+                
                 //insert db
                 if (value == "Public")
                 {
@@ -68,7 +71,7 @@ namespace TSAC.Rosada.Blog.Web.Pages.Posts
                     UserUpdate = userId,
                     DataUpdate = DateTime.Now,
                     PublishedDate = PublishedDate,
-                    Image = "/files/" + filename
+                    Image = filename
                 });
                 return RedirectToPage("/index");
             }
