@@ -36,5 +36,15 @@ body {
     }
 }
 .comment {
-    border: solid 1px black;
+    border: 1px solid #949699;
+    padding: 10px;
+    border-radius: 25px;
+    margin-bottom: 2%;
+}
+
+.card {
+    border: 1px solid #949699;
+    padding: 10px;
+    border-radius: 25px;
+    margin-bottom: 2%;
 }

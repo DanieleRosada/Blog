@@ -21,7 +21,7 @@ connection.start().catch(function (err) {
 connection.on("ReceiveMessage", function (user, message) {
     console.log("receiveMessage")
     $(".comments").append("<div class=\"comment new\"><h4>" + user + "</h4><p>" + message + "</p><p>Now</p></div>");
-    $('.new').css('background', 'green')
+    $('.new').css('background', '#65CBA2')
 });
 
 document.getElementById("sendButton").addEventListener("click", function (event) {

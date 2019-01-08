@@ -11,12 +11,19 @@
     {
         @if (item.PublishedDate != null)
         {
-            @if (item.Image != null)
-            {<img src=@item.Image />}
-            <a asp-page="posts/details" asp-route-id="@item.Id">
-                <h3>@item.Title</h3>
-            </a>
-            <p>@item.Content</p>
+            <div class="card col-md-12">
+                @if (item.Image != null)
+                {
+                    <img class="card-img-top" src=@item.Image alt="Card image cap">
+                }
+                <div class="card-body">
+                    <a asp-page="posts/details" asp-route-id="@item.Id">
+                        <h3>@item.Title</h3>
+                    </a>
+                    <p class="card-text">@item.Content</p>
+                    <p class="card-text"><small class="text-muted">Published date: @item.PublishedDate, User: @item.UserInsert</small></p>
+                </div>
+            </div>
         }
     }
 </div>
